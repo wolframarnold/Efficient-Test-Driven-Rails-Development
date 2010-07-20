@@ -1,0 +1,6 @@
+config/database.yml
+log/*
+tmp/*
+db/*.sqlite3
+.idea
+.DS_Store
