@@ -56,6 +56,13 @@ describe Person do
     it 'finds all records whose first or last name starts with the given letters' do
       Person.find_by_names_starting_with("Jon").should == [@anna, @jona]
     end
+
+    it 'should have a LIKE query for first and last name' do
+      # Note: This spec tests implementation, something we generally try to avoid.
+      # In this case, it's an acceptable exception to double check that the fully expanded search term query meets our expectation.
+      Person.find_by_names_starting_with("Jon").proxy_options.should ==
+              {:conditions => ["first_name LIKE :term OR last_name LIKE :term", {:term=>"Jon%"}]}
+    end
   end
 
 end
