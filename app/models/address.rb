@@ -4,6 +4,8 @@ class Address < ActiveRecord::Base
 
   before_save :set_country_if_missing
 
+  belongs_to :person
+
   private
 
   def set_country_if_missing

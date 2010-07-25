@@ -65,4 +65,8 @@ describe Person do
     end
   end
 
+  it 'has addresses' do
+    p = Person.new
+    p.should respond_to(:addresses)
+  end
 end

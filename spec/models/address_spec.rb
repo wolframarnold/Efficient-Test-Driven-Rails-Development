@@ -51,4 +51,25 @@ describe Address do
       end
     end
   end
+
+  describe "Association" do
+    before do
+      @valid_attributes = {:street => "123 Main St", :city => "San Francisco", :zip => '12345'}
+    end
+
+    it "should respond to :people" do
+      addr = Address.new
+      addr.should respond_to(:person)
+    end
+
+    it "should allow creation of a person" do
+
+      addr = Address.create!(@valid_attributes)
+
+      lambda {
+        addr.create_person(:first_name => "Joe", :last_name => "Smith")
+      }.should change(Person, :count).by(1)
+    end
+  end
+
 end

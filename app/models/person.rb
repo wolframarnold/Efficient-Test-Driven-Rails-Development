@@ -6,6 +6,8 @@ class Person < ActiveRecord::Base
     { :conditions => ["first_name LIKE :term OR last_name LIKE :term", { :term => "#{term}%" } ] }
   }
 
+  has_many :addresses
+
   def joe?
     first_name == "Joe"
   end
