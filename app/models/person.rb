@@ -8,6 +8,7 @@ class Person < ActiveRecord::Base
 
   has_many :addresses
   has_many :messages, :foreign_key => "recipient_id"
+  has_many :unread_messages, :class_name => "Message", :foreign_key => "recipient_id", :conditions => {:read_at => nil}
 
   def joe?
     first_name == "Joe"

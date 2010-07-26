@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Message do
 
-  describe "Validations" do
+  context "Validations" do
     %w(sender recipient).each do |attr|
       it "requires #{attr}" do
         m = Message.new
@@ -12,7 +12,7 @@ describe Message do
     end
   end
 
-  describe "Associations" do
+  context "Associations" do
     it 'belongs to a sender' do
       Message.new.should respond_to(:sender)
     end
@@ -31,6 +31,17 @@ describe Message do
       msg = Factory(:message)
       msg.recipient.should_not be_nil
       msg.recipient.should be_kind_of(Person)
+    end
+
+    it 'can retrieve new messages' do
+      recipient = Factory(:person)
+      msg_new = Factory(:message, :recipient => recipient)
+      msg_read = Factory(:read_message, :recipient => recipient)
+
+      # Verify data set is non-trivial and correct
+      recipient.messages.should == [msg_new,msg_read]
+
+      recipient.unread_messages.should == [msg_new]
     end
   end
 

@@ -7,3 +7,7 @@ Factory.define(:message) do |m|
   m.association :sender, :factory => :person
   m.association :recipient, :factory => :person
 end
+
+Factory.define(:read_message, :parent => :message) do |m|
+  m.read_at Time.now
+end
