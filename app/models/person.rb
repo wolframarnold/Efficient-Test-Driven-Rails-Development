@@ -7,6 +7,7 @@ class Person < ActiveRecord::Base
   }
 
   has_many :addresses
+  has_many :messages, :foreign_key => "recipient_id"
 
   def joe?
     first_name == "Joe"

@@ -65,8 +65,19 @@ describe Person do
     end
   end
 
-  it 'has addresses' do
-    p = Person.new
-    p.should respond_to(:addresses)
+  describe "Associations" do
+    it 'has addresses' do
+      Person.new.should respond_to(:addresses)
+    end
+
+    it 'has messages' do
+      Person.new.should respond_to(:messages)
+    end
+    
+    it 'can retrieve messages' do
+      p = Factory(:person)
+      p.messages.should be_empty
+    end
+
   end
 end
