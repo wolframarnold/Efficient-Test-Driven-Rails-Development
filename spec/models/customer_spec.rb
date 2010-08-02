@@ -10,24 +10,28 @@ describe Customer do
     should respond_to(:orders)
   end
 
-  it 'retrieves orders' do
-    order = Factory(:order)
-    order.customer.orders.should == [order]
-  end
+  context "Finders" do
 
-  it 'can retrieve all the items purchased' do
-    order_item = Factory(:order_item)
-    item = order_item.item
-    order = order_item.order
-    order.customer.items.should == [item]
-  end
+    it 'retrieves orders' do
+      order = Factory(:order)
+      order.customer.orders.should == [order]
+    end
+  
+    it 'can retrieve all the items purchased' do
+      order_item = Factory(:order_item)
+      item = order_item.item
+      order = order_item.order
+      order.customer.items.should == [item]
+    end
 
-  it "finds a customer's most recent order" do
-    customer = Factory(:customer)
-    order1 = Factory(:order, :customer => customer, :created_at => 10.days.ago)
-    order2 = Factory(:order, :customer => customer, :created_at => 1.day.ago)
+    it "finds a customer's most recent order" do
+      customer = Factory(:customer)
+      order1 = Factory(:order, :customer => customer, :created_at => 10.days.ago)
+      order2 = Factory(:order, :customer => customer, :created_at => 1.day.ago)
 
-    customer.orders.most_recent.should == order2
+      customer.orders.most_recent.should == order2
+    end
+
   end
 
   context "Loyalty search" do
