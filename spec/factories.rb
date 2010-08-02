@@ -11,3 +11,10 @@ end
 Factory.define(:read_message, :parent => :message) do |m|
   m.read_at Time.now
 end
+
+Factory.define(:address) do |a|
+  a.city "San Francisco"
+  a.street "123 Main St"
+  a.zip "94103"
+  a.state "CA"
+end

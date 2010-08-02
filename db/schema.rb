@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100726002125) do
+ActiveRecord::Schema.define(:version => 20100802014406) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "person_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20100726002125) do
     t.string   "country"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "state"
   end
 
   add_index "addresses", ["person_id"], :name => "index_addresses_on_person_id"
