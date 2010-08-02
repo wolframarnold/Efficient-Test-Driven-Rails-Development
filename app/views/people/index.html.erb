@@ -1,0 +1,8 @@
+<h1>All People</h1>
+<ul>
+    <% @people.each do |p| %>
+        <li>
+          <%= h(p.full_name) %>
+        </li>
+    <% end %>
+</ul>

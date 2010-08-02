@@ -14,4 +14,8 @@ class Person < ActiveRecord::Base
     first_name == "Joe"
   end
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
 end
