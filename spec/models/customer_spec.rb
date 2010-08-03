@@ -55,14 +55,19 @@ describe Customer do
       Customer.min_2_items.should == [@customer1]
     end
 
+    # Note: this is failing right now, as we discovered in class. How can
+    # the implementation be adapted to make it pass?
     it 'finds customers who orders 2 or more items within the last 90 days' do
       @order2.order_items.create(:item => @item1)
       @order2.order_items.create(:item => @item2)
 
+      order3 = Factory(:order, :customer => @customer2)
+      order3.order_items.create(:item => @item1)
+
       # check non-trivial
       Customer.min_2_items.should == [@customer1, @customer2]
 
-      Customer.loyal_last_90_days.min_2_items.should == [@customer1]
+      Customer.min_2_items.loyal_last_90_days.should == [@customer1]
     end
   end
 end
