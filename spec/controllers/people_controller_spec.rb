@@ -101,7 +101,25 @@ describe PeopleController do
         }.should change(Person, :count).by(1)
       end
 
+      context "with nested addresses" do
+        before do
+          @post_params = {:first_name => "Jona", :last_name => "Jones",
+                          :addresses_attributes => [ {:city   => "San Francisco",
+                                                      :street => "123 Main St",
+                                                      :zip    => "94103",
+                                                      :state  => "CA" }] }
+        end
+        it 'creates both a person and an address' do
+          lambda {
+          lambda {
+            post :create, :person => @post_params
+          }.should change(Person, :count).by(1)
+          }.should change(Address, :count).by(1)
+        end
+      end
+
     end
+    
     context "when failing" do
       before do
         @post_params = {:first_name => "", :last_name => "Jones"}

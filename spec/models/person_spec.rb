@@ -80,4 +80,28 @@ describe Person do
     end
 
   end
+
+  describe "Nested Attributes" do
+    subject { Person.new(:first_name => "Joe", :last_name => "Smith") }
+    it 'creates an address' do
+      lambda {
+        subject.attributes = {:addresses_attributes => [{:city => "San Francisco",
+                                                         :street => "123 Main St",
+                                                         :zip => "94103",
+                                                         :state => "CA"}]}
+        subject.save!
+      }.should change {subject.addresses(true).count}.from(0).to(1)
+    end
+
+    it 'ignores an all-blank address record' do
+      lambda {
+        subject.attributes = {:addresses_attributes => [{:city => "",
+                                                         :street => "",
+                                                         :zip => "",
+                                                         :state => ""}]}
+        subject.save!
+      }.should_not change(Address, :count)
+
+    end
+  end
 end

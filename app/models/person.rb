@@ -10,6 +10,8 @@ class Person < ActiveRecord::Base
   has_many :messages, :foreign_key => "recipient_id"
   has_many :unread_messages, :class_name => "Message", :foreign_key => "recipient_id", :conditions => {:read_at => nil}
 
+  accepts_nested_attributes_for :addresses, :reject_if => :all_blank
+
   def joe?
     first_name == "Joe"
   end
