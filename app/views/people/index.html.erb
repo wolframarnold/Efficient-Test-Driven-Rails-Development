@@ -2,7 +2,9 @@
 <ul>
     <% @people.each do |p| %>
         <li>
-          <%= h(p.full_name) %>
+          <%= h(p.full_name) %><br />
+          <% addr = p.addresses.first %>
+          <%= h "#{addr.street}, #{addr.city}, #{addr.state}, #{addr.zip}" if addr.present? %>
         </li>
     <% end %>
 </ul>

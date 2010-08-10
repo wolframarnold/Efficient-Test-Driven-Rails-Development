@@ -11,14 +11,6 @@ describe PeopleController do
       get 'index'
     end
 
-    xit "should be successful" do
-      response.should be_success
-    end
-
-    xit 'should render index template' do
-      response.should render_template('index')
-    end
-
     it 'should load all people' do
       assigns[:people].should == [@person]
     end
@@ -28,14 +20,6 @@ describe PeopleController do
   describe "GET 'show'" do
     before do
       get 'show', :id => @person.id
-    end
-
-    xit "should be successful" do
-      response.should be_success
-    end
-
-    xit "should render 'show' template" do
-      response.should render_template('show')
     end
 
     it 'should load that person' do
@@ -48,32 +32,22 @@ describe PeopleController do
       get 'new'
     end
 
-    xit "should be successful" do
-      response.should be_success
-    end
-
-    xit "should render 'new' template" do
-      response.should render_template('new')
-    end
-
     it 'should assign a new Person object' do
       assigns[:person].should_not be_nil
       assigns[:person].should be_kind_of(Person)
       assigns[:person].should be_new_record
+    end
+
+    it 'should have a blank address object' do
+      assigns[:person].addresses.should_not be_empty
+      assigns[:person].addresses.length.should == 1  # Note: don't use count here, because that will do a database lookup
+      # The record created in the controller is an in-memory object only and length will return the in-memory count + database count
     end
   end
 
   describe "GET 'edit'" do
     before do
       get 'edit', :id => @person.id
-    end
-
-    xit "should be successful" do
-      response.should be_success
-    end
-
-    xit "should render 'edit' template" do
-      response.should render_template('edit')
     end
 
     it 'should load that person' do
