@@ -22,6 +22,13 @@ class Customer < Person
     :having => 'COUNT(order_items.id) >= 2'
   }
 
+  named_scope :min_2_items_last_90_days, {
+    :include => { :orders => :order_items },
+    :conditions => ['orders.created_at >= ?', 90.days.ago],
+    :group   => 'order_items.item_id',
+    :having => 'COUNT(order_items.id) >= 2'
+  }
+
   def items(opts={})
     Item.all({:include => {:order_items => {:order => :customer}}, :conditions => {'orders.customer_id' => self.id}}.reverse_merge(opts))
   end

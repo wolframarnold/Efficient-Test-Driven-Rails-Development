@@ -67,7 +67,9 @@ describe Customer do
       # check non-trivial
       Customer.min_2_items.should == [@customer1, @customer2]
 
-      Customer.min_2_items.loyal_last_90_days.should == [@customer1]
+#      Customer.min_2_items.loyal_last_90_days.should == [@customer1] -- this one gives the wrong result
+      # the grouping must be by order_items.item_id to take into account recency, not by people.id
+      Customer.min_2_items_last_90_days.should == [@customer1]
     end
   end
 end
