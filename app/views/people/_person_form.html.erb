@@ -9,26 +9,54 @@
         <%= f.text_field :last_name %>
     </p>
 
-    <% f.fields_for :addresses do |addr| %>
-        <p>
-            <%= addr.label :street %><br />
-            <%= addr.text_field :street %>
-        </p>
-        <p>
-            <%= addr.label :city %><br />
-            <%= addr.text_field :city %>
-        </p>
-        <p>
-            <%= addr.label :state %><br />
-            <%= addr.text_field :state %>
-        </p>
-        <p>
-            <%= addr.label :zip %><br />
-            <%= addr.text_field :zip %>
-        </p>
-    <% end %>
+    <div class="address">
+        <% f.fields_for :addresses do |addr| %>
+            <p>
+                <%= addr.label :street %><br />
+                <%= addr.text_field :street %>
+            </p>
+            <p>
+                <%= addr.label :city %><br />
+                <%= addr.text_field :city %>
+            </p>
+            <p>
+                <%= addr.label :state %><br />
+                <%= addr.text_field :state %>
+            </p>
+            <p>
+                <%= addr.label :zip %><br />
+                <%= addr.text_field :zip %>
+            </p>
+        <% end %>
 
-    <p>
-        <%= f.submit %>
+        <%= link_to "Add one", '#', :class => 'add_one_link' %>
+    </div>
+
+    <p id="submit">
+      <%= f.submit %>
     </p>
 <% end  %>
+
+<%= javascript_tag <<-JS
+
+$('.add_one_link').live('click',function(){
+   var copy = $('.address:last').clone();
+   var nextIdx;
+   copy.find('input').each(function(){
+     $(this).val('');
+     nextIdx = parseInt($(this).attr('name').replace(/.*([0-9]+).*/,"$1"))+1;
+     // console.log(nextIdx);
+     var name = $(this).attr('name').replace(/[0-9]+/,nextIdx);
+     $(this).attr('name',name);
+     var id = $(this).attr('id').replace(/[0-9]+/,nextIdx);
+     $(this).attr('id',id);
+   });
+   copy.find('label').each(function(){
+     var label_for = $(this).attr('for').replace(/[0-9]+/,nextIdx);
+     $(this).attr('for',label_for);
+   });
+   copy.insertBefore($('#submit'));
+});
+
+JS
+%>
