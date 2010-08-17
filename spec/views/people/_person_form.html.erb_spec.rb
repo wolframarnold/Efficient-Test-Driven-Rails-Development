@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'people/new' do
+describe 'people/_person_form' do
   before do
     p = Person.new
     p.addresses.build      # same as what controller's #new would do, initialize a blank address record

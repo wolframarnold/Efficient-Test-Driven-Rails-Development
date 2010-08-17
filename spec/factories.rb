@@ -13,6 +13,7 @@ Factory.define(:read_message, :parent => :message) do |m|
 end
 
 Factory.define(:address) do |a|
+  a.association :person
   a.city "San Francisco"
   a.street "123 Main St"
   a.zip "94103"

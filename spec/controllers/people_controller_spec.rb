@@ -46,12 +46,24 @@ describe PeopleController do
   end
 
   describe "GET 'edit'" do
-    before do
-      get 'edit', :id => @person.id
-    end
 
     it 'should load that person' do
+      get 'edit', :id => @person.id
       assigns[:person].should == @person
+    end
+
+    it 'should build a blank address if the person does not have an address yet' do
+      @person.addresses.should be_empty
+      get 'edit', :id => @person.id
+      assigns[:person].addresses.should_not be_empty
+    end
+
+    it 'should does not build a blank address if the person already has an address' do
+      Factory(:address, :person => @person)
+      @person.addresses.count be_empty
+      lambda {
+        get 'edit', :id => @person.id
+      }.should_not change(@person.addresses, :count)
     end
   end
 
@@ -122,4 +134,67 @@ describe PeopleController do
     end
 
   end
+
+  describe "PUT 'update'" do
+    context "when successful" do
+      before do
+        @person = Factory(:person, :first_name => "Jona")
+      end
+      it 'redirects to index' do
+        put :update, :id => @person.to_param
+        response.should redirect_to(people_path)
+      end
+      it 'assigns the person' do
+        put :update, :id => @person.to_param
+        assigns[:person].should == @person
+      end
+      it 'updates the record' do
+        lambda {
+          put :update, :id => @person.to_param, :person => {:first_name => "Johanna"}
+        }.should change {@person.reload.first_name}.from("Jona").to("Johanna")
+      end
+
+      context "with nested addresses" do
+        before do
+          @address = Factory(:address, :street => "123 Main St")
+          @person  = @address.person
+        end
+        it 'updates a nested address' do
+          lambda {
+            put :update, :id => @person.to_param, :person => {:addresses_attributes =>
+                                                               [{:id => @address.to_param,:street => "345 3rd St"}]}
+          }.should change{@address.reload.street}.from("123 Main St").to("345 3rd St")
+        end
+      end
+
+    end
+
+    context "when failing" do
+      before do
+        @person = Factory(:person, :first_name => "Jona")
+      end
+      it 're-renders "edit"' do
+        put :update, :id => @person.to_param, :person => {:first_name => ""}
+        response.should render_template('edit')
+      end
+      it 'assigns the person' do
+        # This is important, so that when re-rendering "new", the previously entered values are already set
+        put :update, :id => @person.to_param, :person => {:first_name => "Johanna"}
+        assigns[:person].should == @person
+      end
+      it 'does NOT update the record' do
+        lambda {
+          put :update, :id => @person.to_param, :person => {:first_name => ""}
+        }.should_not change{@person.reload.first_name}
+      end
+    end
+    context "when using a verb other than PUT" do
+      it 'rejects the request' do
+        controller.should_not_receive(:update)
+        get :update
+      end
+    end
+
+  end
+
 end

@@ -2,6 +2,7 @@ class PeopleController < ApplicationController
 
   before_filter :load_person, :only => [:show, :edit]
   verify :method => :post, :only => :create
+  verify :method => :put,  :only => :update
 
   def index
     @people = Person.all
@@ -16,6 +17,7 @@ class PeopleController < ApplicationController
   end
 
   def edit
+    @person.addresses.build if @person.addresses.empty?
   end
 
   def create
@@ -24,6 +26,16 @@ class PeopleController < ApplicationController
       redirect_to people_path
     else
       render :new
+    end
+  end
+
+  def update
+    @person = Person.find(params[:id])
+    @person.attributes = params[:person]
+    if @person.save
+      redirect_to(people_path)
+    else
+      render :edit
     end
   end
 
