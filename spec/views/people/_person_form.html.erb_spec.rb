@@ -18,4 +18,9 @@ describe 'people/_person_form' do
     end
   end
 
+  it 'has a hidden field _destroy for address with no value' do
+    response.should have_tag("input[name='person[addresses_attributes][0][_destroy]'][type=hidden]")
+    response.should have_tag("input[name='person[addresses_attributes][0][_destroy]'][value][type=hidden]", :count => 0)
+  end
+
 end

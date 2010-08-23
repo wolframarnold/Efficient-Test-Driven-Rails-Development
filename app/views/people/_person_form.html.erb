@@ -9,28 +9,30 @@
         <%= f.text_field :last_name %>
     </p>
 
-    <div class="address">
-        <% f.fields_for :addresses do |addr| %>
-            <p>
-                <%= addr.label :street %><br />
-                <%= addr.text_field :street %>
-            </p>
-            <p>
-                <%= addr.label :city %><br />
-                <%= addr.text_field :city %>
-            </p>
-            <p>
-                <%= addr.label :state %><br />
-                <%= addr.text_field :state %>
-            </p>
-            <p>
-                <%= addr.label :zip %><br />
-                <%= addr.text_field :zip %>
-            </p>
-        <% end %>
+    <% f.fields_for :addresses do |addr| %>
+        <div class="address">
+            <%= link_to "Delete", '#', :class => 'delete_link' %>
+              <%= addr.hidden_field :_destroy %>
+                <p>
+                    <%= addr.label :street %><br />
+                    <%= addr.text_field :street %>
+                </p>
+                <p>
+                    <%= addr.label :city %><br />
+                    <%= addr.text_field :city %>
+                </p>
+                <p>
+                    <%= addr.label :state %><br />
+                    <%= addr.text_field :state %>
+                </p>
+                <p>
+                    <%= addr.label :zip %><br />
+                    <%= addr.text_field :zip %>
+                </p>
+        </div>
+    <% end %>
 
-        <%= link_to "Add one", '#', :class => 'add_one_link' %>
-    </div>
+    <%= link_to "Add one", '#', :class => 'add_one_link' %>
 
     <p id="submit">
       <%= f.submit %>
@@ -38,25 +40,30 @@
 <% end  %>
 
 <%= javascript_tag <<-JS
-
-$('.add_one_link').live('click',function(){
-   var copy = $('.address:last').clone();
-   var nextIdx;
-   copy.find('input').each(function(){
-     $(this).val('');
-     nextIdx = parseInt($(this).attr('name').replace(/.*([0-9]+).*/,"$1"))+1;
-     // console.log(nextIdx);
-     var name = $(this).attr('name').replace(/[0-9]+/,nextIdx);
-     $(this).attr('name',name);
-     var id = $(this).attr('id').replace(/[0-9]+/,nextIdx);
-     $(this).attr('id',id);
-   });
-   copy.find('label').each(function(){
-     var label_for = $(this).attr('for').replace(/[0-9]+/,nextIdx);
-     $(this).attr('for',label_for);
-   });
-   copy.insertBefore($('#submit'));
+$(function(){
+    window.addressForm = $('.address:last').clone();
+    window.nextIdx = 1;
+    $('.add_one_link').click(function(){
+       var copy = window.addressForm.clone();
+       var nextIdx = window.nextIdx;
+       copy.find('input').each(function(){
+         $(this).val('');
+         var name = $(this).attr('name').replace(/[0-9]+/,nextIdx);
+         $(this).attr('name',name);
+         var id = $(this).attr('id').replace(/[0-9]+/,nextIdx);
+         $(this).attr('id',id);
+       });
+       copy.find('label').each(function(){
+         var label_for = $(this).attr('for').replace(/[0-9]+/,nextIdx);
+         $(this).attr('for',label_for);
+       });
+       ++window.nextIdx;
+       copy.insertBefore($('.add_one_link'));
+    });
+    $('.delete_link').live('click', function(){
+        $(this).parent().hide(); // don't remove it--it still needs to get to the server
+        $(this).parent().find('input[name*=_destroy]').val('1');
+    });
 });
-
 JS
 %>
