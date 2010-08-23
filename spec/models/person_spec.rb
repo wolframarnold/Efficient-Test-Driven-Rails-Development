@@ -82,26 +82,52 @@ describe Person do
   end
 
   describe "Nested Attributes" do
-    subject { Person.new(:first_name => "Joe", :last_name => "Smith") }
-    it 'creates an address' do
-      lambda {
-        subject.attributes = {:addresses_attributes => [{:city => "San Francisco",
-                                                         :street => "123 Main St",
-                                                         :zip => "94103",
-                                                         :state => "CA"}]}
-        subject.save!
-      }.should change {subject.addresses(true).count}.from(0).to(1)
+    context "creating" do
+      subject { Person.new(:first_name => "Joe", :last_name => "Smith") }
+      it 'creates an address' do
+        lambda {
+          subject.attributes = {:addresses_attributes => [{:city => "San Francisco",
+                                                           :street => "123 Main St",
+                                                           :zip => "94103",
+                                                           :state => "CA"}]}
+          subject.save!
+        }.should change {subject.addresses(true).count}.from(0).to(1)
+      end
+
+      it 'ignores an all-blank address record' do
+        lambda {
+          subject.attributes = {:addresses_attributes => [{:city => "",
+                                                           :street => "",
+                                                           :zip => "",
+                                                           :state => ""}]}
+          subject.save!
+        }.should_not change(Address, :count)
+
+      end
+
+      it 'ignores new records marked for destruction with _destroy flag' do
+        lambda {
+          subject.attributes = {:addresses_attributes => [{:city => "San Francisco",
+                                                           :street => "123 Main St",
+                                                           :zip => "94103",
+                                                           :state => "CA",
+                                                           :_destroy => '1'}]}
+          subject.save!
+        }.should_not change(Address, :count)
+      end
     end
 
-    it 'ignores an all-blank address record' do
-      lambda {
-        subject.attributes = {:addresses_attributes => [{:city => "",
-                                                         :street => "",
-                                                         :zip => "",
-                                                         :state => ""}]}
-        subject.save!
-      }.should_not change(Address, :count)
-
+    context "editing" do
+      before {
+        @address = Factory(:address)
+      }
+      subject { @address.person }
+      it 'can delete an address via nested attributes and _destroy flag' do
+        lambda {
+          subject.attributes = {:addresses_attributes => [{:id => @address.id, :city => "San Jose", :_destroy => 1}]}
+          subject.save!
+        }.should change{subject.addresses(true).count}.by(-1)  # addresses(true) causes a reload
+      end
     end
   end
 end
