@@ -23,9 +23,15 @@ class PeopleController < ApplicationController
   def create
     @person = Person.new(params[:person])
     if @person.save
-      redirect_to people_path
+      respond_to do |format|
+      format.html { redirect_to people_path }
+      format.json { head 201 }
+    end
     else
-      render :new
+      respond_to do |format|
+        format.html { render :new }
+        format.json { render :json => @person.errors }
+      end
     end
   end
 

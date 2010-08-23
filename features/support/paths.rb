@@ -10,6 +10,9 @@ module NavigationHelpers
 
     when /the home\s?page/
       '/'
+    when /the new person_creation_json page/
+      new_person_creation_json_path
+
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
