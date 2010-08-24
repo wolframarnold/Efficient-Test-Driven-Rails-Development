@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100802035016) do
+ActiveRecord::Schema.define(:version => 20100824025356) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "person_id"
@@ -69,6 +69,12 @@ ActiveRecord::Schema.define(:version => 20100802035016) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string "email",                             :default => "", :null => false
+    t.string "encrypted_password", :limit => 128, :default => "", :null => false
+    t.string "password_salt",                     :default => "", :null => false
   end
 
 end

@@ -1,5 +1,7 @@
 class PeopleController < ApplicationController
 
+  before_filter :authenticate_user!
+  
   before_filter :load_person, :only => [:show, :edit]
   verify :method => :post, :only => :create
   verify :method => :put,  :only => :update
