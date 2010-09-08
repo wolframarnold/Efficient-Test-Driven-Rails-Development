@@ -16,9 +16,9 @@ describe Item do
     before do
       @items = 3.times.inject([]) { |res,i| res << Factory(:item) }
       # create order items records with 2 * Item0, 5 * Item1, 1 * Item2
-      @order_items = 2.times.inject([]) { |res,i| res << Factory(:order_item, :item => @items[0])} +
-                     5.times.inject([]) { |res,i| res << Factory(:order_item, :item => @items[1])} +
-                     1.times.inject([]) { |res,i| res << Factory(:order_item, :item => @items[2])}
+      @orders = 2.times.inject([]) { |res,i| res << Factory(:order, :items => [@items[0]])} +
+                5.times.inject([]) { |res,i| res << Factory(:order, :items => [@items[1]])} +
+                1.times.inject([]) { |res,i| res << Factory(:order, :items => [@items[2]])}
       Item.count.should == 3
       OrderItem.count.should == 8
     end

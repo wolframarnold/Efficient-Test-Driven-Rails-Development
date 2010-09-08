@@ -25,7 +25,7 @@ class Customer < Person
   named_scope :min_2_items_last_90_days, {
     :include => { :orders => :order_items },
     :conditions => ['orders.created_at >= ?', 90.days.ago],
-    :group   => 'order_items.item_id',
+    :group   => 'people.id',
     :having => 'COUNT(order_items.id) >= 2'
   }
 

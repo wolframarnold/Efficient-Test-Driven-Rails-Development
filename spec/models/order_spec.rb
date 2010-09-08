@@ -13,16 +13,23 @@ describe Order do
     should respond_to(:items)
   end
 
-  context "Finders" do
+  it 'can make order with associated objects' do
+    order = Factory(:order)
+    order.order_items.should have(2).items
+    order.order_items.each do |oi|
+      oi.should be_kind_of(OrderItem)
+      oi.item.should be_kind_of(Item)
+    end
+  end
+
+  context "has_many :through" do
 
     before do
-      @order_item = Factory(:order_item)
-      @order      = @order_item.order
-      @item       = @order_item.item
+      @order = Factory(:order)
     end
 
     it 'retrieves items' do
-      @order.items.should == [@item]
+      @order.items.should == @order.order_items.map(&:item)
     end
   end
 

@@ -32,14 +32,16 @@ end
 
 Factory.define(:order) do |o|
   o.association :customer
+  o.items { |i| [i.association(:item), i.association(:item)]}
+end
+
+Factory.define(:order_with_1_item, :class => Order) do |o|
+  o.association :customer
+  o.items { |i| [i.association(:item)]}
 end
 
 Factory.define(:item) do |i|
-  i.sequence(:name) {|n| "Product #{n}"}
+  i.sequence(:name) {|n| "Product ##{n}"}
   i.sequence(:price) {|n| 399.00 + n}
 end
 
-Factory.define(:order_item) do |oi|
-  oi.association :item
-  oi.association :order
-end

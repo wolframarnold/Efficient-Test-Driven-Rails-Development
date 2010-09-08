@@ -12,16 +12,16 @@ describe Customer do
 
   context "Finders" do
 
+    before do
+      @order = Factory(:order)
+    end
+
     it 'retrieves orders' do
-      order = Factory(:order)
-      order.customer.orders.should == [order]
+      @order.customer.orders.should == [@order]
     end
   
     it 'can retrieve all the items purchased' do
-      order_item = Factory(:order_item)
-      item = order_item.item
-      order = order_item.order
-      order.customer.items.should == [item]
+      @order.customer.items.should == @order.items
     end
 
     it "finds a customer's most recent order" do
@@ -37,14 +37,13 @@ describe Customer do
   context "Loyalty search" do
 
     before do
+      Order.delete_all
+      OrderItem.delete_all
+      Item.delete_all
       @order1 = Factory(:order)
       @customer1 = @order1.customer
-      @order2 = Factory(:order, :created_at => 91.days.ago)
+      @order2 = Factory(:order_with_1_item, :created_at => 91.days.ago)
       @customer2 = @order2.customer
-      @item1 = Factory(:item)
-      @item2 = Factory(:item)
-      @order1.order_items.create(:item => @item1)
-      @order1.order_items.create(:item => @item2)
     end
 
     it 'finds customers who placed orders in the last 90 days' do
@@ -55,20 +54,25 @@ describe Customer do
       Customer.min_2_items.should == [@customer1]
     end
 
-    # Note: this is failing right now, as we discovered in class. How can
-    # the implementation be adapted to make it pass?
     it 'finds customers who orders 2 or more items within the last 90 days' do
-      @order2.order_items.create(:item => @item1)
-      @order2.order_items.create(:item => @item2)
+      @order2.items << Factory(:item)
 
-      order3 = Factory(:order, :customer => @customer2)
-      order3.order_items.create(:item => @item1)
-
-      # check non-trivial
+      # check non-trivial, minimum 2 items
       Customer.min_2_items.should == [@customer1, @customer2]
 
-#      Customer.min_2_items.loyal_last_90_days.should == [@customer1] -- this one gives the wrong result
+      order3 = Factory(:order_with_1_item)
+      customer3 = order3.customer
+      # check non-trivial, 90 days
+      Customer.loyal_last_90_days.should == [@customer1, customer3]
+
+      Customer.min_2_items.loyal_last_90_days.should == [@customer1] #-- this one gives the wrong result
       # the grouping must be by order_items.item_id to take into account recency, not by people.id
+      Customer.min_2_items_last_90_days.should == [@customer1]
+    end
+
+    it 'requires that both items be purchased in the last 90 days' do
+      Factory(:order_with_1_item, :customer => @customer2)
+
       Customer.min_2_items_last_90_days.should == [@customer1]
     end
   end
